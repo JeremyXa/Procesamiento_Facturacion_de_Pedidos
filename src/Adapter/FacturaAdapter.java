@@ -8,6 +8,15 @@ package Adapter;
  *
  * @author USUARIO
  */
-public class FacturaAdapter {
-    
+public class FacturaAdapter implements FacturaService {
+    private LegacyBillingSystem legacySystem;
+
+    public FacturaAdapter(LegacyBillingSystem legacySystem) {
+        this.legacySystem = legacySystem;
+    }
+
+    @Override
+    public void generarFactura(String cliente, String producto, double total) {
+        legacySystem.createInvoice(cliente, producto, total);
+    }
 }
