@@ -24,7 +24,7 @@ public class  PedidoFacade {
     public void procesarPedido(String cliente, String producto, int cantidad) {
         System.out.println("\n==== Procesando pedido ====");
         if (!validador.validarStock(producto, cantidad)) {
-            System.out.println("❌ Error: cantidad inválida o sin stock disponible.");
+            System.out.println("Error: cantidad inválida o sin stock disponible.");
             return;
         }
 
