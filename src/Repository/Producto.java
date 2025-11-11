@@ -9,18 +9,18 @@ package Repository;
  * @author USUARIO
  */
 public class Producto {
-    private String nombre;
+    private String nombrep;
     private double precio;
     private int stock;
 
     public Producto(String nombre, double precio, int stock) {
-        this.nombre = nombre;
+        this.nombrep = nombrep;
         this.precio = precio;
         this.stock = stock;
     }
 
     public String getNombre() {
-        return nombre;
+        return nombrep;
     }
 
     public double getPrecio() {
