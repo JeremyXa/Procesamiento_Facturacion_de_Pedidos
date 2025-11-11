@@ -12,8 +12,11 @@ import Repository.Pedido;
 public class FacturaAdapter implements FacturaService {
     private LegacyBillingSystem legacySystem = new LegacyBillingSystem();
 
-    public void generarFactura(Pedido pedido) {
-        legacySystem.generarFacturaAntigua(
+    
+    
+    
+    public void GenerarFacturaNueva(Pedido pedido) {
+        legacySystem.GenerarFacturaAntigua(
                 pedido.getCliente().getNombre(),
                 pedido.getProducto().getNombre(),
                 pedido.getSubtotal(),

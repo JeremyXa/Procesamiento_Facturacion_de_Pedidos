@@ -9,6 +9,6 @@ import Repository.Pedido;
  * @author USUARIO
  */
 public interface FacturaService {
-void generarFactura(Pedido pedido);
+void GenerarFacturaNueva(Pedido pedido);
 
 }

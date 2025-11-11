@@ -70,7 +70,7 @@ public class Procesamiento_FacturaciónDePedidos {
                         indice = sc.nextInt();
                         sc.nextLine();
                         if (indice < 1 || indice > productos.size()) {
-                            System.out.println("❌ Número fuera de rango. Intenta de nuevo.");
+                            System.out.println("Número fuera de rango. Intenta de nuevo.");
                         }
                     } while (indice < 1 || indice > productos.size());
 
@@ -92,7 +92,7 @@ public class Procesamiento_FacturaciónDePedidos {
                         tipo = sc.nextInt();
                         sc.nextLine();
                         if (tipo != 1 && tipo != 2) {
-                            System.out.println("❌ Debe elegir 1 o 2.");
+                            System.out.println("Debe elegir 1 o 2.");
                         }
                     } while (tipo != 1 && tipo != 2);
 
@@ -112,11 +112,11 @@ public class Procesamiento_FacturaciónDePedidos {
                     break;
 
                 case 3:
-                    System.out.println("👋 Saliendo del sistema...");
+                    System.out.println("Saliendo del sistema...");
                     break;
 
                 default:
-                    System.out.println("❌ Opción inválida. Intenta de nuevo.");
+                    System.out.println("Opción inválida. Intenta de nuevo.");
                     break;
             }
 

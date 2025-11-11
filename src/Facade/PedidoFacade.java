@@ -17,12 +17,12 @@ import Repository.Cliente;
  */
 public class  PedidoFacade {
     private List<Producto> productos;
-    private PedidoRepository repo;
+    private PedidoRepository pedidoguarda;
     private FacturaService facturaService;
 
     public PedidoFacade(List<Producto> productos, PedidoRepository repo) {
         this.productos = productos;
-        this.repo = repo;
+        this.pedidoguarda = repo;
         this.facturaService = new FacturaAdapter();
     }
 
@@ -31,17 +31,17 @@ public class  PedidoFacade {
         Producto producto = buscarProducto(nombreProducto);
 
         if (producto == null) {
-            System.out.println("❌ Producto no encontrado.");
+            System.out.println("Producto no encontrado.");
             return;
         }
 
         if (cantidad <= 0) {
-            System.out.println("❌ La cantidad debe ser positiva.");
+            System.out.println("La cantidad debe ser positiva.");
             return;
         }
 
         if (cantidad > producto.getStock()) {
-            System.out.println("❌ No hay suficiente stock disponible.");
+            System.out.println("No hay suficiente stock disponible.");
             return;
         }
 
@@ -52,18 +52,18 @@ public class  PedidoFacade {
         producto.reducirStock(cantidad);
 
         Pedido pedido = new Pedido(cliente, producto, cantidad, subtotal, impuesto, total);
-        repo.guardar(pedido);
+        pedidoguarda.guardar(pedido);
 
-        facturaService.generarFactura(pedido);
+        facturaService.GenerarFacturaNueva(pedido);
     }
 
     
     
     
     public void mostrarPedido(String nombreCliente) {
-        Pedido pedido = repo.buscarPorCliente(nombreCliente);
+        Pedido pedido = pedidoguarda.buscarPorCliente(nombreCliente);
         if (pedido == null) {
-            System.out.println("❌ No se encontró un pedido para el cliente ingresado.");
+            System.out.println("No se encontró un pedido para el cliente ingresado.");
         } else {
             System.out.println("\n--- PEDIDO REGISTRADO ---");
             System.out.println("Cliente: " + pedido.getCliente().getNombre());

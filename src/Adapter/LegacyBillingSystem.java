@@ -9,7 +9,7 @@ package Adapter;
  * @author USUARIO
  */
 public class LegacyBillingSystem {
-       public void generarFacturaAntigua(String cliente, String producto, double subtotal, double impuesto, double total) {
+       public void GenerarFacturaAntigua(String cliente, String producto, double subtotal, double impuesto, double total) {
         System.out.println("\n--- FACTURA (Sistema Antiguo) ---");
         System.out.println("Cliente: " + cliente);
         System.out.println("Producto: " + producto);
