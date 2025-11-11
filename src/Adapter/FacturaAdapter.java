@@ -3,20 +3,23 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Adapter;
+import Repository.Pedido;
 
 /**
  *
  * @author USUARIO
  */
 public class FacturaAdapter implements FacturaService {
-    private LegacyBillingSystem legacySystem;
+    private LegacyBillingSystem legacySystem = new LegacyBillingSystem();
 
-    public FacturaAdapter(LegacyBillingSystem legacySystem) {
-        this.legacySystem = legacySystem;
+    public void generarFactura(Pedido pedido) {
+        legacySystem.generarFacturaAntigua(
+                pedido.getCliente().getNombre(),
+                pedido.getProducto().getNombre(),
+                pedido.getSubtotal(),
+                pedido.getImpuesto(),
+                pedido.getTotal()
+        );
     }
 
-    @Override
-    public void generarFactura(String cliente, String producto, double total) {
-        legacySystem.createInvoice(cliente, producto, total);
-    }
 }

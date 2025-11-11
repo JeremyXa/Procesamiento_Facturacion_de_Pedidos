@@ -4,61 +4,80 @@
  */
 package Facade;
 import Adapter.FacturaService;
+import Adapter.FacturaAdapter;
+import Repository.Pedido;
+import Strategy.ImpuestoStrategy;
+import Repository.Producto;
+import java.util.*;
+import Repository.PedidoRepository;
+import Repository.Cliente;
 /**
  *
  * @author USUARIO
  */
 public class  PedidoFacade {
-    private Stock validador;
-    private CalculoP calculadora;
-    private RegistroDePedido registro;
+    private List<Producto> productos;
+    private PedidoRepository repo;
     private FacturaService facturaService;
 
-    public PedidoFacade(FacturaService facturaService) {
-        this.validador = new Stock();
-        this.calculadora = new CalculoP();
-        this.registro = new RegistroDePedido();
-        this.facturaService = facturaService;
+    public PedidoFacade(List<Producto> productos, PedidoRepository repo) {
+        this.productos = productos;
+        this.repo = repo;
+        this.facturaService = new FacturaAdapter();
     }
 
-    public void procesarPedido(String cliente, String producto, int cantidad) {
-        System.out.println("\n==== Procesando pedido ====");
-        if (!validador.validarStock(producto, cantidad)) {
-            System.out.println("Error: cantidad inválida o sin stock disponible.");
+    public void procesarPedido(String nombreCliente, String nombreProducto, int cantidad, ImpuestoStrategy impuestoStrategy) {
+        Cliente cliente = new Cliente(nombreCliente);
+        Producto producto = buscarProducto(nombreProducto);
+
+        if (producto == null) {
+            System.out.println("❌ Producto no encontrado.");
             return;
         }
 
-        double precio = validador.obtenerPrecio(producto);
-        double subtotal = calculadora.calcularSubtotal(precio, cantidad);
-        double igv = calculadora.calcularIGV(subtotal);
-        double total = calculadora.calcularTotal(subtotal, igv);
-
-        registro.registrar(cliente, producto, cantidad);
-        facturaService.generarFactura(cliente, producto, total);
-
-        System.out.println("\n=== COMPROBANTE ===");
-        System.out.println("Cliente: " + cliente);
-        System.out.println("Producto: " + producto);
-        System.out.println("Cantidad: " + cantidad);
-        System.out.println("Subtotal: S/." + subtotal);
-        System.out.println("IGV (18%): S/." + igv);
-        System.out.println("Total: S/." + total);
-        System.out.println("====================");
-    }
-
-    public void mostrarProductosDisponibles() {
-        System.out.println("Productos disponibles:");
-        System.out.println("1. Laptop Lenovo - S/.2500.00 (Stock: 5)");
-        System.out.println("2. Mouse Logitech - S/.120.00 (Stock: 10)");
-        System.out.println("3. Teclado Redragon - S/.180.00 (Stock: 8)");
-    }
-
-    public String obtenerProductoPorOpcion(int opcion) {
-        switch (opcion) {
-            case 1: return "Laptop Lenovo";
-            case 2: return "Mouse Logitech";
-            case 3: return "Teclado Redragon";
-            default: return null;
+        if (cantidad <= 0) {
+            System.out.println("❌ La cantidad debe ser positiva.");
+            return;
         }
+
+        if (cantidad > producto.getStock()) {
+            System.out.println("❌ No hay suficiente stock disponible.");
+            return;
+        }
+
+        double subtotal = producto.getPrecio() * cantidad;
+        double impuesto = impuestoStrategy.calcular(subtotal);
+        double total = subtotal + impuesto;
+
+        producto.reducirStock(cantidad);
+
+        Pedido pedido = new Pedido(cliente, producto, cantidad, subtotal, impuesto, total);
+        repo.guardar(pedido);
+
+        facturaService.generarFactura(pedido);
+    }
+
+    
+    
+    
+    public void mostrarPedido(String nombreCliente) {
+        Pedido pedido = repo.buscarPorCliente(nombreCliente);
+        if (pedido == null) {
+            System.out.println("❌ No se encontró un pedido para el cliente ingresado.");
+        } else {
+            System.out.println("\n--- PEDIDO REGISTRADO ---");
+            System.out.println("Cliente: " + pedido.getCliente().getNombre());
+            System.out.println("Producto: " + pedido.getProducto().getNombre());
+            System.out.println("Cantidad: " + pedido.getCantidad());
+            System.out.printf("Subtotal: %.2f | IGV: %.2f | Total: %.2f\n",
+                    pedido.getSubtotal(), pedido.getImpuesto(), pedido.getTotal());
+        }
+          }
+
+    private Producto buscarProducto(String nombre) {
+        for (Producto p : productos) {
+            if (p.getNombre().equalsIgnoreCase(nombre)) return p;
+        }
+        return null;
     }
 }

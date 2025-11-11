@@ -9,8 +9,11 @@ package Adapter;
  * @author USUARIO
  */
 public class LegacyBillingSystem {
-    public void createInvoice(String customer, String item, double totalAmount) {
-        System.out.println("🧾 [LegacyBillingSystem] Factura creada para " + customer +
-                " - Producto: " + item + " - Total: S/." + totalAmount);
+       public void generarFacturaAntigua(String cliente, String producto, double subtotal, double impuesto, double total) {
+        System.out.println("\n--- FACTURA (Sistema Antiguo) ---");
+        System.out.println("Cliente: " + cliente);
+        System.out.println("Producto: " + producto);
+        System.out.printf("Subtotal: %.2f\nImpuesto: %.2f\nTotal: %.2f\n", subtotal, impuesto, total);
+        System.out.println("---------------------------------");
     }
 }

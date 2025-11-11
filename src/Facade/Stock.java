@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Facade;
-import java.util.Scanner;
+
 import java.util.Map;
 import java.util.HashMap;
 /**
@@ -11,27 +11,28 @@ import java.util.HashMap;
  * @author USUARIO
  */
 public class Stock {
-    private Map<String, Integer> stockProductos = new HashMap<>();
+  private Map<String, Integer> stock = new HashMap<>();
+    private Map<String, Double> precios = new HashMap<>();
 
     public Stock() {
-        // Carga de productos con su stock disponible
-        stockProductos.put("Laptop Lenovo", 5);
-        stockProductos.put("Mouse Logitech", 10);
-        stockProductos.put("Teclado Redragon", 8);
+        stock.put("Laptop", 5);
+        stock.put("Mouse", 10);
+        stock.put("Teclado", 8);
+
+        precios.put("Laptop", 2500.0);
+        precios.put("Mouse", 80.0);
+        precios.put("Teclado", 150.0);
     }
 
     public boolean validarStock(String producto, int cantidad) {
-        if (!stockProductos.containsKey(producto)) return false;
-        int stockDisponible = stockProductos.get(producto);
-        return cantidad > 0 && cantidad <= stockDisponible;
+        return stock.containsKey(producto) && cantidad > 0 && cantidad <= stock.get(producto);
     }
 
     public double obtenerPrecio(String producto) {
-        switch (producto) {
-            case "Laptop Lenovo": return 2500.00;
-            case "Mouse Logitech": return 120.00;
-            case "Teclado Redragon": return 180.00;
-            default: return 0.0;
-        }
+        return precios.getOrDefault(producto, 0.0);
+    }
+
+    public void reducirStock(String producto, int cantidad) {
+        stock.put(producto, stock.get(producto) - cantidad);
     }
 }

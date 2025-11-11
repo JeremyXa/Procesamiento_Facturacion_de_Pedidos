@@ -4,63 +4,124 @@
  */
 package procesamiento_facturación.de.pedidos;
 import java.util.Scanner;
-import java.util.Map;
-import java.util.HashMap;
-import Adapter.LegacyBillingSystem;
-import Adapter.FacturaService;
+import java.util.*;
+import Strategy.ExoneradoStrategy;
+import Strategy.ImpuestoStrategy;
+import Strategy.IGV18Strategy;
 import Facade.PedidoFacade;
-import Adapter.FacturaAdapter;
-/**
- *
- * @author USUARIO
- */
+import Repository.Producto;
+import Repository.PedidoRepository;
+
+
+
+
 public class Procesamiento_FacturaciónDePedidos {
 
   
-        
-          public static void main(String[] args) {
+     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        LegacyBillingSystem legacy = new LegacyBillingSystem();
-        FacturaService adaptador = new FacturaAdapter(legacy);
-        PedidoFacade facade = new PedidoFacade(adaptador);
 
-        System.out.print("Ingrese su nombre: ");
-        String cliente = sc.nextLine();
+        // Lista de productos con stock inicial
+        List<Producto> productos = new ArrayList<>();
+        productos.add(new Producto("Laptop", 2500, 10));
+        productos.add(new Producto("Mouse", 60, 30));
+        productos.add(new Producto("Teclado", 120, 20));
 
-        // Permitir repetir si elige opción incorrecta
-        String producto = null;
-        int opcion = 0;
+        PedidoRepository repo = new PedidoRepository();
+        PedidoFacade facade = new PedidoFacade(productos, repo);
+
+        int opcion;
         do {
-            facade.mostrarProductosDisponibles();
-            System.out.print("Seleccione el número del producto: ");
-            try {
-                opcion = Integer.parseInt(sc.nextLine());
-                producto = facade.obtenerProductoPorOpcion(opcion);
-                if (producto == null) {
-                    System.out.println("⚠️ Opción inválida. Intente nuevamente.\n");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("⚠️ Entrada inválida. Por favor ingrese un número.\n");
-            }
-        } while (producto == null);
+            System.out.println("\n===== MENÚ PRINCIPAL =====");
+            System.out.println("1. Registrar pedido");
+            System.out.println("2. Buscar pedido por cliente");
+            System.out.println("3. Salir");
+            System.out.print("Elige una opción: ");
 
-        // Validar cantidad
-        int cantidad = 0;
-        do {
-            System.out.print("Ingrese la cantidad: ");
-            try {
-                cantidad = Integer.parseInt(sc.nextLine());
-                if (cantidad <= 0) {
-                    System.out.println("⚠️ La cantidad debe ser mayor a 0. Intente nuevamente.\n");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("⚠️ Entrada inválida. Ingrese un número entero.\n");
-                cantidad = 0;
+            // Validar entrada numérica
+            while (!sc.hasNextInt()) {
+                System.out.print("Opción inválida. Intenta nuevamente: ");
+                sc.next();
             }
-        } while (cantidad <= 0);
+            opcion = sc.nextInt();
+            sc.nextLine(); // limpiar buffer
 
-        // Procesar el pedido
-        facade.procesarPedido(cliente, producto, cantidad);
+            switch (opcion) {
+                case 1:
+                    System.out.print("Nombre del cliente: ");
+                    String nombre = sc.nextLine();
+
+                    // Mostrar lista numerada de productos
+                    System.out.println("Productos disponibles:");
+                    for (int i = 0; i < productos.size(); i++) {
+                        Producto p = productos.get(i);
+                        System.out.println((i + 1) + ". " + p.getNombre() +
+                                " (S/ " + p.getPrecio() + ", Stock: " + p.getStock() + ")");
+                    }
+
+                    // Seleccionar producto por número
+                    int indice = -1;
+                    do {
+                        System.out.print("Elige el número del producto: ");
+                        while (!sc.hasNextInt()) {
+                            System.out.print("Opción inválida. Intenta nuevamente: ");
+                            sc.next();
+                        }
+                        indice = sc.nextInt();
+                        sc.nextLine();
+                        if (indice < 1 || indice > productos.size()) {
+                            System.out.println("❌ Número fuera de rango. Intenta de nuevo.");
+                        }
+                    } while (indice < 1 || indice > productos.size());
+
+                    String nombreProd = productos.get(indice - 1).getNombre();
+
+                    // Ingresar cantidad
+                    System.out.print("Cantidad: ");
+                    int cantidad = sc.nextInt();
+                    sc.nextLine();
+
+                    // Elegir tipo de impuesto
+                    int tipo;
+                    do {
+                        System.out.print("Tipo de impuesto (1 = 18%, 2 = 0%): ");
+                        while (!sc.hasNextInt()) {
+                            System.out.print("Opción inválida. Intenta nuevamente: ");
+                            sc.next();
+                        }
+                        tipo = sc.nextInt();
+                        sc.nextLine();
+                        if (tipo != 1 && tipo != 2) {
+                            System.out.println("❌ Debe elegir 1 o 2.");
+                        }
+                    } while (tipo != 1 && tipo != 2);
+
+                    // Elegir estrategia de impuesto
+                    ImpuestoStrategy estrategia = (tipo == 1)
+                            ? new IGV18Strategy()
+                            : new ExoneradoStrategy();
+
+                    // Procesar pedido con el Facade
+                    facade.procesarPedido(nombre, nombreProd, cantidad, estrategia);
+                    break;
+
+                case 2:
+                    System.out.print("Nombre del cliente: ");
+                    String buscar = sc.nextLine();
+                    facade.mostrarPedido(buscar);
+                    break;
+
+                case 3:
+                    System.out.println("👋 Saliendo del sistema...");
+                    break;
+
+                default:
+                    System.out.println("❌ Opción inválida. Intenta de nuevo.");
+                    break;
+            }
+
+        } while (opcion != 3);
+
         sc.close();
     }
-}
+    }
