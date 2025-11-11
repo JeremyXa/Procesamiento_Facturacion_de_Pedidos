@@ -20,9 +20,9 @@ public class  PedidoFacade {
     private PedidoRepository pedidoguarda;
     private FacturaService facturaService;
 
-    public PedidoFacade(List<Producto> productos, PedidoRepository repo) {
+    public PedidoFacade(List<Producto> productos, PedidoRepository pedidoguarda) {
         this.productos = productos;
-        this.pedidoguarda = repo;
+        this.pedidoguarda = pedidoguarda;
         this.facturaService = new FacturaAdapter();
     }
 
