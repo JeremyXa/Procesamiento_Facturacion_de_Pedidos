@@ -4,6 +4,8 @@
  */
 package Repository;
 
+
+// crear una lista en memoria para guardar los pedidos
 import java.util.List;
 import java.util.ArrayList;
 
@@ -13,14 +15,16 @@ public class PedidoRepository {
 
   
   //funcion para agragar a la lista 
-    public void guardar(Pedido pedido) {
+  // Sincronizado para seguridad en hilos
+    public synchronized void guardar(Pedido pedido) {
         pedidos.add(pedido);
     }
 //Buscar el pedido por nombre
-    public Pedido buscarPorCliente(String nombre) {
+//  Sincronizado para seguridad en hilos
+    public synchronized Pedido buscarPorCliente(String nombre) {
         for (Pedido p : pedidos) {
             if (p.getCliente().getNombre().equalsIgnoreCase(nombre)) { /*Usa equalsIgnoreCase() para que la comparación no 
-                                                                        distinga mayúsculas/minúsculas (“juan” = “Juan”)*/
+                                                                        distinga mayúsculas y minúsculas*/
                 return p;
             }
         }
@@ -28,5 +32,3 @@ public class PedidoRepository {
     }
     
 }
-
-

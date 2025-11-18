@@ -4,10 +4,7 @@
  */
 package Strategy;
 
-/**
- *
- * @author USUARIO
- */
+
 public interface ImpuestoStrategy {
      double calcular(double subtotal);
 }

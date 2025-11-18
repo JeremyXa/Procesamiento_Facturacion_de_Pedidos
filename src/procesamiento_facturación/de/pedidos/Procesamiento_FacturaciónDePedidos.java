@@ -18,7 +18,7 @@ import Repository.PedidoRepository;
 public class Procesamiento_FacturaciónDePedidos {
 
   
-      public static void main(String[] args) {
+  public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
         // Lista de productos con stock inicial
@@ -102,7 +102,7 @@ public class Procesamiento_FacturaciónDePedidos {
                             ? new IGV18Strategy()
                             : new ExoneradoStrategy();
 
-                    // Procesar pedido con el Facade (ya sin nombreProd)
+                    // Procesar pedido con el Facade (ahora es asíncrono)
                     facade.procesarPedido(nombre, productoSeleccionado, cantidad, estrategia);
                     break;
 
@@ -123,6 +123,8 @@ public class Procesamiento_FacturaciónDePedidos {
 
         } while (opcion != 3);
 
+        // 🔹 MODIFICADO: Apagar el pool de hilos antes de salir
+        facade.shutdown();
         sc.close();
     }
 }

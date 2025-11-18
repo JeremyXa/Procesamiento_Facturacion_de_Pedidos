@@ -4,10 +4,7 @@
  */
 package Strategy;
 
-/**
- *
- * @author USUARIO
- */
+
 public class IGV18Strategy implements ImpuestoStrategy {
      @Override
    public double calcular(double subtotal) {

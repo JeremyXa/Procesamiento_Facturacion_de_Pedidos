@@ -4,10 +4,12 @@
  */
 package Observer;
 
+import Repository.Pedido;
+
 /**
- *
- * @author USUARIO
+ * Interfaz para el patrón Observer.
+ * Cualquier clase que quiera ser notificada de un nuevo pedido debe implementarla.
  */
-public class PedidoObserver {
-    
+public interface PedidoObserver {
+    void onPedidoCreado(Pedido pedido);
 }
