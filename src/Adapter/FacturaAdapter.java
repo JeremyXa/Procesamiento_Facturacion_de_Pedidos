@@ -18,7 +18,7 @@ public class FacturaAdapter implements FacturaService {
     public void GenerarFacturaNueva(Pedido pedido) {
         legacySystem.GenerarFacturaAntigua(
                 pedido.getCliente().getNombre(),
-                pedido.getProducto().getNombre(),
+                pedido.getProducto().getNombreP(),
                 pedido.getSubtotal(),
                 pedido.getImpuesto(),
                 pedido.getTotal()

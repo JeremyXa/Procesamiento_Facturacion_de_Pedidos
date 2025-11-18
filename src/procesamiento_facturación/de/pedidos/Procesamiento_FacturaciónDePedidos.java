@@ -18,7 +18,7 @@ import Repository.PedidoRepository;
 public class Procesamiento_FacturaciónDePedidos {
 
   
-     public static void main(String[] args) {
+      public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
         // Lista de productos con stock inicial
@@ -55,7 +55,7 @@ public class Procesamiento_FacturaciónDePedidos {
                     System.out.println("Productos disponibles:");
                     for (int i = 0; i < productos.size(); i++) {
                         Producto p = productos.get(i);
-                        System.out.println((i + 1) + ". " + p.getNombre() +
+                        System.out.println((i + 1) + ". " + p.getNombreP() +
                                 " (S/ " + p.getPrecio() + ", Stock: " + p.getStock() + ")");
                     }
 
@@ -74,7 +74,8 @@ public class Procesamiento_FacturaciónDePedidos {
                         }
                     } while (indice < 1 || indice > productos.size());
 
-                    String nombreProd = productos.get(indice - 1).getNombre();
+                    // 🔹 Aquí seleccionamos directamente el producto
+                    Producto productoSeleccionado = productos.get(indice - 1);
 
                     // Ingresar cantidad
                     System.out.print("Cantidad: ");
@@ -101,8 +102,8 @@ public class Procesamiento_FacturaciónDePedidos {
                             ? new IGV18Strategy()
                             : new ExoneradoStrategy();
 
-                    // Procesar pedido con el Facade
-                    facade.procesarPedido(nombre, nombreProd, cantidad, estrategia);
+                    // Procesar pedido con el Facade (ya sin nombreProd)
+                    facade.procesarPedido(nombre, productoSeleccionado, cantidad, estrategia);
                     break;
 
                 case 2:
@@ -124,4 +125,4 @@ public class Procesamiento_FacturaciónDePedidos {
 
         sc.close();
     }
-    }
+}

@@ -15,8 +15,8 @@ import Repository.Cliente;
  *
  * @author USUARIO
  */
-public class  PedidoFacade {
-    private List<Producto> productos;
+public class PedidoFacade {
+    private List<Producto> productos;  
     private PedidoRepository pedidoguarda;
     private FacturaService facturaService;
 
@@ -26,10 +26,12 @@ public class  PedidoFacade {
         this.facturaService = new FacturaAdapter();
     }
 
-    public void procesarPedido(String nombreCliente, String nombreProducto, int cantidad, ImpuestoStrategy impuestoStrategy) {
+    // 🔹 Flujo de negocio principal
+    public void procesarPedido(String nombreCliente, Producto producto, int cantidad, ImpuestoStrategy impuestoStrategy) {
+        // Crear el cliente
         Cliente cliente = new Cliente(nombreCliente);
-        Producto producto = buscarProducto(nombreProducto);
 
+        // Validaciones básicas
         if (producto == null) {
             System.out.println("Producto no encontrado.");
             return;
@@ -45,21 +47,23 @@ public class  PedidoFacade {
             return;
         }
 
+        // Cálculos
         double subtotal = producto.getPrecio() * cantidad;
         double impuesto = impuestoStrategy.calcular(subtotal);
         double total = subtotal + impuesto;
 
+        // Actualizar stock
         producto.reducirStock(cantidad);
 
+        // Crear y guardar pedido
         Pedido pedido = new Pedido(cliente, producto, cantidad, subtotal, impuesto, total);
         pedidoguarda.guardar(pedido);
 
+        // Generar factura
         facturaService.GenerarFacturaNueva(pedido);
     }
 
-    
-    
-    
+    //  Mostrar pedido por cliente
     public void mostrarPedido(String nombreCliente) {
         Pedido pedido = pedidoguarda.buscarPorCliente(nombreCliente);
         if (pedido == null) {
@@ -67,17 +71,10 @@ public class  PedidoFacade {
         } else {
             System.out.println("\n--- PEDIDO REGISTRADO ---");
             System.out.println("Cliente: " + pedido.getCliente().getNombre());
-            System.out.println("Producto: " + pedido.getProducto().getNombre());
+            System.out.println("Producto: " + pedido.getProducto().getNombreP());
             System.out.println("Cantidad: " + pedido.getCantidad());
             System.out.printf("Subtotal: %.2f | IGV: %.2f | Total: %.2f\n",
                     pedido.getSubtotal(), pedido.getImpuesto(), pedido.getTotal());
         }
-          }
-
-    private Producto buscarProducto(String nombre) {
-        for (Producto p : productos) {
-            if (p.getNombre().equalsIgnoreCase(nombre)) return p;
-        }
-        return null;
     }
 }
