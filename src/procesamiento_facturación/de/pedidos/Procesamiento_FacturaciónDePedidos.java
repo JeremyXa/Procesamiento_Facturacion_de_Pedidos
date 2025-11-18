@@ -74,7 +74,7 @@ public class Procesamiento_FacturaciónDePedidos {
                         }
                     } while (indice < 1 || indice > productos.size());
 
-                    // 🔹 Aquí seleccionamos directamente el producto
+                    // seleccionamos directamente el producto
                     Producto productoSeleccionado = productos.get(indice - 1);
 
                     // Ingresar cantidad
@@ -123,7 +123,7 @@ public class Procesamiento_FacturaciónDePedidos {
 
         } while (opcion != 3);
 
-        // 🔹 MODIFICADO: Apagar el pool de hilos antes de salir
+        // Apagar el pool de hilos antes de salir
         facade.shutdown();
         sc.close();
     }
